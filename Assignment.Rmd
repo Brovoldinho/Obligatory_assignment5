@@ -7,6 +7,36 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(tidyverse)
+install.packages("mosaic")
+library(mosaic)
 ```
 
+
+
+```{r}
+getwd()
+
+
+
+births <- read_fwf("Nat2017PublicUS.c20180516.r20180808.txt", 
+                       fwf_positions(start = c(13,475,504),
+                       end = c(14,475,507),
+                       col_names = c("birth_month","gender", "birth_weight")))
+
+```
+
+```{r}
+births$birth_month <- as.numeric(births$birth_month)
+births$gender <- as.factor(births$gender)
+births$birth_weight <- as.numeric(births$birth_weight)
+
+
+births <- births %>% filter(birth_weight < 9999) 
+
+favstats(~birth_month, data = births)
+
+
+```
 
