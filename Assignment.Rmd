@@ -7,10 +7,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(readr)
 library(tidyverse)
-install.packages("mosaic")
+library(readr)
 library(mosaic)
+library(ggplot2)
 ```
 
 
@@ -39,4 +39,56 @@ favstats(~birth_month, data = births)
 
 
 ```
+
+##Antall fødsler per kjønn.
+
+```{r}
+
+tally(~gender, data = births)
+tally(~gender, data = births, format = "percent")
+
+```
+
+```{r}
+favstats(~birth_weight, data = births)
+```
+##Grafisk fremstilling av vekt ved fødsel. Her ser vi tydelig en standard normalfordeling.
+```{r}
+ggplot(data = births, aes(x = birth_weight)) + geom_histogram(binwidth = 50) + 
+  labs(title = "Histogram av vekt ved fødsel") 
+```
+
+```{r}
+ggplot(data = births, aes(x = birth_weight)) + geom_density() + 
+  labs(title = "Density Plot of Birth Weight in grams") 
+```
+
+#Oversikt på nøkkeltall per kjønn.
+```{r}
+favstats(~birth_weight|gender, data = births)
+
+```
+
+#Plotter begge kjønn og finner at illusterer grafisk at gutter er tyngre ved fødsel.
+```{r}
+
+
+ggplot() + geom_density(data=births, aes(x=birth_weight, group=gender, fill=gender), alpha=0.5, adjust=2) + 
+  xlab("Birth Weight in grams") + ylab("Density")
+
+```
+
+#Formel test av forskjellig fødselsvekt.
+```{r}
+summary(lm(birth_weight~gender, data = births))
+
+```
+
+#Forskjell i gjennomsnittsvekten mellom gutter og jenter.
+```{r}
+
+diffmean(birth_weight~gender, data = births)
+```
+
+
 
